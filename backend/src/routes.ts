@@ -9,6 +9,7 @@ import { CreateCategoryController } from './controllers/category/CreateCategoryC
 import { ListCategoryController } from './controllers/category/ListCategoryController';
 import { isAdmin } from './middlewares/isAdmin';
 import { createCategorySchema } from './schemas/categorySchema';
+import { CreateProductController } from './controllers/product/CreateProductController';
 
 const router = Router();
 
@@ -34,5 +35,13 @@ router.post(
   new CreateCategoryController().handle,
 );
 router.get('/category', isAuthenticated, new ListCategoryController().handle);
+
+// Rotas products
+router.post(
+  '/product',
+  isAuthenticated,
+  isAdmin,
+  new CreateProductController().handle,
+);
 
 export { router };
