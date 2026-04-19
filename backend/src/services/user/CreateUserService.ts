@@ -1,10 +1,10 @@
 import { hash } from 'bcryptjs';
-import prismaClient from '../prisma';
+import prismaClient from '../../prisma';
 
 interface CreateUserProps {
-  name: String;
-  email: String;
-  password: String;
+  name: string;
+  email: string;
+  password: string;
 }
 
 class CreateUserService {
@@ -27,9 +27,16 @@ class CreateUserService {
         email: email,
         password: passwordHash,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
     });
 
-    return user.name;
+    return user;
   }
 }
 
