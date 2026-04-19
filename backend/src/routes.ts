@@ -4,6 +4,7 @@ import { validateSchema } from './middlewares/validateSchema';
 import { authUserSchema, createUserSchema } from './schemas/UserSchema';
 import { AuthUserController } from './controllers/user/AuthUserController';
 import { DetailUserController } from './controllers/user/DetailUserController';
+import { isAuthenticated } from './middlewares/isAuthenticated';
 
 const router = Router();
 
@@ -18,6 +19,6 @@ router.post(
   validateSchema(authUserSchema),
   new AuthUserController().handle,
 );
-router.get('/me', new DetailUserController().handle);
+router.get('/me', isAuthenticated, new DetailUserController().handle);
 
 export { router };
