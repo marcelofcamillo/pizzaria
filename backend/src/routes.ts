@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import multer from 'multer';
+import uploadConfig from './config/multer';
 import { CreateUserController } from './controllers/user/CreateUserController';
 import { validateSchema } from './middlewares/validateSchema';
 import { authUserSchema, createUserSchema } from './schemas/UserSchema';
@@ -12,6 +14,7 @@ import { createCategorySchema } from './schemas/categorySchema';
 import { CreateProductController } from './controllers/product/CreateProductController';
 
 const router = Router();
+const upload = multer(uploadConfig);
 
 // Rotas users
 router.post(
@@ -41,6 +44,7 @@ router.post(
   '/product',
   isAuthenticated,
   isAdmin,
+  upload.single('file'),
   new CreateProductController().handle,
 );
 
