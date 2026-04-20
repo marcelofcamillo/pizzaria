@@ -103,9 +103,17 @@ backend/
 │   │   ├── category/
 │   │   │   ├── CreateCategoryController.ts
 │   │   │   └── ListCategoryController.ts
+│   │   ├── order/
+│   │   │   ├── CreateOrderController.ts
+│   │   │   ├── ListOrdersController.ts
+│   │   │   ├── DetailOrderController.ts
+│   │   │   ├── AddItemOrderController.ts
+│   │   │   └── RemoveItemOrderController.ts
 │   │   ├── product/
 │   │   │   ├── CreateProductController.ts
-│   │   │   └── ListProductController.ts
+│   │   │   ├── ListProductController.ts
+│   │   │   ├── ListProductByCategoryController.ts
+│   │   │   └── DeleteProductController.ts
 │   │   └── user/
 │   │       ├── AuthUserController.ts
 │   │       ├── CreateUserController.ts
@@ -121,15 +129,24 @@ backend/
 │   │   └── index.ts
 │   ├── schemas/              # Schemas de validação Zod
 │   │   ├── categorySchema.ts
+│   │   ├── orderSchema.ts
 │   │   ├── productSchema.ts
 │   │   └── userSchema.ts
 │   ├── services/             # Services (lógica de negócio)
 │   │   ├── category/
 │   │   │   ├── CreateCategoryService.ts
 │   │   │   └── ListCategoryService.ts
+│   │   ├── order/
+│   │   │   ├── CreateOrderService.ts
+│   │   │   ├── ListOrdersService.ts
+│   │   │   ├── DetailOrderService.ts
+│   │   │   ├── AddItemOrderService.ts
+│   │   │   └── RemoveItemOrderService.ts
 │   │   ├── product/
 │   │   │   ├── CreateProductService.ts
-│   │   │   └── ListProductService.ts
+│   │   │   ├── ListProductService.ts
+│   │   │   ├── ListProductByCategoryService.ts
+│   │   │   └── DeleteProductService.ts
 │   │   └── user/
 │   │       ├── AuthUserService.ts
 │   │       ├── CreateUserService.ts
@@ -540,19 +557,131 @@ Valida listagem de produtos com filtro:
 
 ---
 
+### Order Schemas (`schemas/orderSchema.ts`)
+
+#### **createOrderSchema**
+
+Valida criação de pedidos:
+
+```typescript
+{
+  body: {
+    table: number (obrigatório, inteiro positivo),
+    name: string (opcional)
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- Table inválido: "O número da mesa é obrigatório"
+- Table não é inteiro: "O número da mesa deve ser um número inteiro"
+- Table não positivo: "O número da mesa deve ser maior que 0"
+
+**Observações**:
+
+- O campo `table` é obrigatório e deve ser um número inteiro positivo
+- O campo `name` é opcional e representa o nome do cliente
+
+---
+
+#### **addItemSchema**
+
+Valida adição de items a um pedido:
+
+```typescript
+{
+  body: {
+    order_id: string (obrigatório),
+    product_id: string (obrigatório),
+    amount: number (obrigatório, inteiro positivo)
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- order_id inválido: "O ID do pedido é obrigatório"
+- product_id inválido: "O ID do produto é obrigatório"
+- amount inválido: "Quantidade deve ser um número inteiro positivo"
+
+---
+
+#### **removeItemSchema**
+
+Valida remoção de items de um pedido:
+
+```typescript
+{
+  query: {
+    item_id: string (UUID - obrigatório)
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- item_id inválido: "O ID do item é obrigatório"
+
+---
+
+#### **detailOrderSchema**
+
+Valida busca de detalhes de um pedido:
+
+```typescript
+{
+  query: {
+    order_id: string (UUID - obrigatório)
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- order_id inválido: "O ID do pedido é obrigatório"
+- UUID mal formatado: "O ID do pedido deve ser um UUID válido"
+
+---
+
+### Product Schemas (Adicional) - **listProductByCategorySchema**
+
+Valida listagem de produtos por categoria:
+
+```typescript
+{
+  query: {
+    category_id: string (UUID - obrigatório)
+  }
+}
+```
+
+**Mensagens de erro**:
+
+- category_id inválido: "O ID da categoria é obrigatório"
+- UUID mal formatado: "O ID da categoria deve ser um UUID válido"
+
+---
+
 ## 🌐 Endpoints
 
 ### 📋 Resumo de Rotas
 
-| Método | Rota      | Autenticação | Permissão   | Descrição                             |
-| ------ | --------- | ------------ | ----------- | ------------------------------------- |
-| POST   | /users    | ❌           | Pública     | Criar novo usuário                    |
-| POST   | /session  | ❌           | Pública     | Autenticar usuário (login)            |
-| GET    | /me       | ✅           | STAFF/ADMIN | Obter dados do usuário logado         |
-| POST   | /category | ✅           | ADMIN       | Criar nova categoria                  |
-| GET    | /category | ✅           | STAFF/ADMIN | Listar todas as categorias            |
-| POST   | /product  | ✅           | ADMIN       | Criar novo produto (com imagem)       |
-| GET    | /products | ✅           | STAFF/ADMIN | Listar produtos (filtro por disabled) |
+| Método | Rota             | Autenticação | Permissão   | Descrição                                      |
+| ------ | ---------------- | ------------ | ----------- | ---------------------------------------------- |
+| POST   | /users           | ❌           | Pública     | Criar novo usuário                             |
+| POST   | /session         | ❌           | Pública     | Autenticar usuário (login)                     |
+| GET    | /me              | ✅           | STAFF/ADMIN | Obter dados do usuário logado                  |
+| POST   | /category        | ✅           | ADMIN       | Criar nova categoria                           |
+| GET    | /category        | ✅           | STAFF/ADMIN | Listar todas as categorias                     |
+| GET    | /category/product| ✅           | STAFF/ADMIN | Listar produtos de uma categoria específica    |
+| POST   | /product         | ✅           | ADMIN       | Criar novo produto (com imagem)                |
+| GET    | /products        | ✅           | STAFF/ADMIN | Listar produtos (filtro por disabled)          |
+| POST   | /order           | ✅           | STAFF/ADMIN | Criar novo pedido                              |
+| GET    | /orders          | ✅           | STAFF/ADMIN | Listar todos os pedidos                        |
+| GET    | /order/detail    | ✅           | STAFF/ADMIN | Obter detalhes de um pedido específico         |
+| POST   | /order/add       | ✅           | STAFF/ADMIN | Adicionar item a um pedido                     |
+| DELETE | /order/remove    | ✅           | STAFF/ADMIN | Remover item de um pedido                      |
 
 ---
 
@@ -863,6 +992,302 @@ GET /products?disabled=true      → Retorna produtos com disabled=true
 **Erros Possíveis**:
 
 - `400`: "O parâmetro disabled deve ser 'true' ou 'false'" - Valor inválido para o query param
+- `401`: Token não fornecido ou inválido
+
+---
+
+#### **GET /category/product**
+
+Lista todos os produtos de uma categoria específica.
+
+**Middlewares**: `isAuthenticated`, `validateSchema(listProductByCategorySchema)`
+
+**Permissão**: Usuários autenticados (STAFF ou ADMIN)
+
+**Headers**:
+
+```
+Authorization: Bearer <token>
+```
+
+**Query Parameters**:
+
+```
+category_id: string (UUID da categoria - obrigatório)
+```
+
+**Exemplo de Uso**:
+
+```
+GET /category/product?category_id=550e8400-e29b-41d4-a716-446655440000
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+[
+  {
+    "id": "uuid-produto-1",
+    "name": "Pizza Margherita",
+    "price": 3500,
+    "description": "Molho de tomate, mussarela e manjericão",
+    "banner": "https://res.cloudinary.com/.../products/123-image.jpg",
+    "disabled": false,
+    "category_id": "550e8400-e29b-41d4-a716-446655440000",
+    "createdAt": "2026-04-20T10:30:00.000Z",
+    "category": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "Pizzas Salgadas"
+    }
+  }
+]
+```
+
+**Erros Possíveis**:
+
+- `400`: "Categoria não encontrada!" - UUID de categoria inválido
+- `400`: "O ID da categoria deve ser um UUID válido." - UUID mal formatado
+- `401`: Token não fornecido ou inválido
+
+---
+
+### **Pedidos**
+
+#### **POST /order**
+
+Cria um novo pedido (mesa).
+
+**Middlewares**: `isAuthenticated`, `validateSchema(createOrderSchema)`
+
+**Permissão**: Usuários autenticados (STAFF ou ADMIN)
+
+**Headers**:
+
+```
+Authorization: Bearer <token>
+```
+
+**Body**:
+
+```json
+{
+  "table": 5,
+  "name": "João Silva"
+}
+```
+
+**Resposta de Sucesso (201)**:
+
+```json
+{
+  "id": "uuid-gerado",
+  "table": 5,
+  "name": "João Silva",
+  "status": false,
+  "draft": true,
+  "createdAt": "2026-04-20T10:30:00.000Z"
+}
+```
+
+**Observações**:
+
+- `table`: Número da mesa (obrigatório, inteiro positivo)
+- `name`: Nome do cliente (opcional)
+- `status`: false = aberto, true = fechado
+- `draft`: true = rascunho, false = confirmado
+
+**Erros Possíveis**:
+
+- `400`: Erro de validação nos campos table ou name
+- `401`: Token não fornecido ou inválido
+
+---
+
+#### **GET /orders**
+
+Lista todos os pedidos cadastrados.
+
+**Middlewares**: `isAuthenticated`
+
+**Permissão**: Usuários autenticados (STAFF ou ADMIN)
+
+**Headers**:
+
+```
+Authorization: Bearer <token>
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+[
+  {
+    "id": "uuid-pedido-1",
+    "table": 5,
+    "name": "João Silva",
+    "status": false,
+    "draft": true,
+    "createdAt": "2026-04-20T10:30:00.000Z"
+  }
+]
+```
+
+---
+
+#### **GET /order/detail**
+
+Obtém todos os detalhes de um pedido específico, incluindo todos os items com seus produtos.
+
+**Middlewares**: `isAuthenticated`, `validateSchema(detailOrderSchema)`
+
+**Permissão**: Usuários autenticados (STAFF ou ADMIN)
+
+**Headers**:
+
+```
+Authorization: Bearer <token>
+```
+
+**Query Parameters**:
+
+```
+order_id: string (UUID do pedido - obrigatório)
+```
+
+**Exemplo de Uso**:
+
+```
+GET /order/detail?order_id=550e8400-e29b-41d4-a716-446655440000
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "table": 5,
+  "name": "João Silva",
+  "status": false,
+  "draft": true,
+  "createdAt": "2026-04-20T10:30:00.000Z",
+  "updatedAt": "2026-04-20T10:30:00.000Z",
+  "items": [
+    {
+      "id": "item-uuid",
+      "amount": 2,
+      "createdAt": "2026-04-20T10:35:00.000Z",
+      "product": {
+        "id": "product-uuid",
+        "name": "Pizza Margherita",
+        "price": 3500,
+        "description": "Molho de tomate, mussarela e manjericão",
+        "banner": "https://res.cloudinary.com/.../products/image.jpg",
+        "disabled": false,
+        "category": {
+          "id": "category-uuid",
+          "name": "Pizzas Salgadas"
+        }
+      }
+    }
+  ]
+}
+```
+
+**Erros Possíveis**:
+
+- `400`: "Pedido não encontrado!" - UUID de pedido inválido
+- `400`: "O ID do pedido deve ser um UUID válido." - UUID mal formatado
+- `401`: Token não fornecido ou inválido
+
+---
+
+#### **POST /order/add**
+
+Adiciona um item (produto) a um pedido específico.
+
+**Middlewares**: `isAuthenticated`, `validateSchema(addItemSchema)`
+
+**Permissão**: Usuários autenticados (STAFF ou ADMIN)
+
+**Headers**:
+
+```
+Authorization: Bearer <token>
+```
+
+**Body**:
+
+```json
+{
+  "order_id": "uuid-do-pedido",
+  "product_id": "uuid-do-produto",
+  "amount": 2
+}
+```
+
+**Resposta de Sucesso (201)**:
+
+```json
+{
+  "id": "item-uuid",
+  "amount": 2,
+  "order_id": "uuid-do-pedido",
+  "product_id": "uuid-do-produto",
+  "createdAt": "2026-04-20T10:35:00.000Z"
+}
+```
+
+**Observações**:
+
+- `order_id`: ID do pedido (obrigatório)
+- `product_id`: ID do produto (obrigatório)
+- `amount`: Quantidade (obrigatório, inteiro positivo)
+
+**Erros Possíveis**:
+
+- `400`: Erro de validação nos campos obrigatórios
+- `401`: Token não fornecido ou inválido
+
+---
+
+#### **DELETE /order/remove**
+
+Remove um item (produto) de um pedido.
+
+**Middlewares**: `isAuthenticated`, `validateSchema(removeItemSchema)`
+
+**Permissão**: Usuários autenticados (STAFF ou ADMIN)
+
+**Headers**:
+
+```
+Authorization: Bearer <token>
+```
+
+**Query Parameters**:
+
+```
+item_id: string (UUID do item - obrigatório)
+```
+
+**Exemplo de Uso**:
+
+```
+DELETE /order/remove?item_id=550e8400-e29b-41d4-a716-446655440000
+```
+
+**Resposta de Sucesso (200)**:
+
+```json
+{
+  "message": "Item removido com sucesso!"
+}
+```
+
+**Erros Possíveis**:
+
+- `400`: "Item não encontrado!" - UUID de item inválido
+- `400`: "O ID do item deve ser um UUID válido." - UUID mal formatado
 - `401`: Token não fornecido ou inválido
 
 ---
@@ -1254,6 +1679,6 @@ npm run dev
 
 ---
 
-**Documento atualizado em**: 11/11/2025  
-**Versão do Projeto**: 1.2.0  
-**Última atualização**: Adicionada rota GET /products com filtro por status (disabled)
+**Documento atualizado em**: 20/04/2026  
+**Versão do Projeto**: 1.3.0  
+**Última atualização**: Adicionadas rotas de Pedidos (POST /order, GET /orders, GET /order/detail, POST /order/add, DELETE /order/remove) e rota GET /category/product para filtrar produtos por categoria
