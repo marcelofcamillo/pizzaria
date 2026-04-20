@@ -41,9 +41,8 @@ export const detailOrderSchema = z.object({
   }),
 });
 
-export const sendOrderSchema = z.object({
+export const finishOrderSchema = z.object({
   body: z.object({
     order_id: z.string({ message: 'O ID do pedido é obrigatório.' }),
-    name: z.string({ message: 'O nome é obrigatório.' }),
   }),
 });
