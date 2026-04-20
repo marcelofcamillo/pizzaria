@@ -88,7 +88,7 @@ Requisição HTTP → Rotas → Middlewares → Controller → Service → Banco
 backend/
 ├── prisma/
 │   ├── migrations/           # Histórico de migrações do banco
-│   │   └── 20251110200355_create_tables/
+│   │   └── 20260419041304_create_tables/
 │   │       └── migration.sql
 │   ├── migration_lock.toml   # Lock de migrações
 │   └── schema.prisma         # Schema do banco de dados

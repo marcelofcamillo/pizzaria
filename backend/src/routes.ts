@@ -13,9 +13,11 @@ import { isAdmin } from './middlewares/isAdmin';
 import { createCategorySchema } from './schemas/categorySchema';
 import { CreateProductController } from './controllers/product/CreateProductController';
 import { ListProductController } from './controllers/product/ListProductController';
+import { ListProductByCategoryController } from './controllers/product/ListProductByCategoryController';
 import {
   createProductSchema,
   listProductSchema,
+  listProductByCategorySchema,
 } from './schemas/productSchema';
 import { DeleteProductController } from './controllers/product/DeleteProductController';
 
@@ -44,6 +46,12 @@ router.post(
   new CreateCategoryController().handle,
 );
 router.get('/category', isAuthenticated, new ListCategoryController().handle);
+router.get(
+  '/category/product',
+  isAuthenticated,
+  validateSchema(listProductByCategorySchema),
+  new ListProductByCategoryController().handle,
+);
 
 // Rotas products
 router.post(
