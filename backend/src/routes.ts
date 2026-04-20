@@ -21,7 +21,8 @@ import {
 } from './schemas/productSchema';
 import { DeleteProductController } from './controllers/product/DeleteProductController';
 import { CreateOrderController } from './controllers/order/CreateOrderController';
-import { addItemSchema, createOrderSchema } from './schemas/orderSchema';
+import { RemoveItemOrderController } from './controllers/order/RemoveItemOrderController';
+import { addItemSchema, createOrderSchema, removeItemSchema } from './schemas/orderSchema';
 import { ListOrdersController } from './controllers/order/ListOrdersController';
 import { AddItemOrderController } from './controllers/order/AddItemOrderController';
 
@@ -92,6 +93,12 @@ router.post(
   isAuthenticated,
   validateSchema(addItemSchema),
   new AddItemOrderController().handle,
+);
+router.delete(
+  '/order/remove',
+  isAuthenticated,
+  validateSchema(removeItemSchema),
+  new RemoveItemOrderController().handle,
 );
 
 export { router };

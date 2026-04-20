@@ -24,3 +24,11 @@ export const addItemSchema = z.object({
       .positive('Quantidade deve ser um número positivo.'),
   }),
 });
+
+export const removeItemSchema = z.object({
+  query: z.object({
+    item_id: z
+      .string({ message: 'O ID do item é obrigatório.' })
+      .min(1, { message: 'O ID do item é obrigatório.' }),
+  }),
+});
