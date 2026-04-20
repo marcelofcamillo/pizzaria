@@ -9,3 +9,18 @@ export const createOrderSchema = z.object({
     name: z.string().optional(),
   }),
 });
+
+export const addItemSchema = z.object({
+  body: z.object({
+    order_id: z
+      .string({ message: 'O pedido deve ser um texto.' })
+      .min(1, { message: 'O ID do pedido é obrigatório.' }),
+    product_id: z
+      .string({ message: 'O produto deve ser um texto.' })
+      .min(1, { message: 'O ID do produto é obrigatório.' }),
+    amount: z
+      .number()
+      .int('Quantidade deve ser um número inteiro.')
+      .positive('Quantidade deve ser um número positivo.'),
+  }),
+});
