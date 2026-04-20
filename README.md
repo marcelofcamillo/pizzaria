@@ -614,7 +614,7 @@ Valida remoção de items de um pedido:
 ```typescript
 {
   query: {
-    item_id: string (UUID - obrigatório)
+    item_id: string(UUID - obrigatório);
   }
 }
 ```
@@ -632,7 +632,7 @@ Valida busca de detalhes de um pedido:
 ```typescript
 {
   query: {
-    order_id: string (UUID - obrigatório)
+    order_id: string(UUID - obrigatório);
   }
 }
 ```
@@ -651,7 +651,7 @@ Valida listagem de produtos por categoria:
 ```typescript
 {
   query: {
-    category_id: string (UUID - obrigatório)
+    category_id: string(UUID - obrigatório);
   }
 }
 ```
@@ -667,21 +667,21 @@ Valida listagem de produtos por categoria:
 
 ### 📋 Resumo de Rotas
 
-| Método | Rota             | Autenticação | Permissão   | Descrição                                      |
-| ------ | ---------------- | ------------ | ----------- | ---------------------------------------------- |
-| POST   | /users           | ❌           | Pública     | Criar novo usuário                             |
-| POST   | /session         | ❌           | Pública     | Autenticar usuário (login)                     |
-| GET    | /me              | ✅           | STAFF/ADMIN | Obter dados do usuário logado                  |
-| POST   | /category        | ✅           | ADMIN       | Criar nova categoria                           |
-| GET    | /category        | ✅           | STAFF/ADMIN | Listar todas as categorias                     |
-| GET    | /category/product| ✅           | STAFF/ADMIN | Listar produtos de uma categoria específica    |
-| POST   | /product         | ✅           | ADMIN       | Criar novo produto (com imagem)                |
-| GET    | /products        | ✅           | STAFF/ADMIN | Listar produtos (filtro por disabled)          |
-| POST   | /order           | ✅           | STAFF/ADMIN | Criar novo pedido                              |
-| GET    | /orders          | ✅           | STAFF/ADMIN | Listar todos os pedidos                        |
-| GET    | /order/detail    | ✅           | STAFF/ADMIN | Obter detalhes de um pedido específico         |
-| POST   | /order/add       | ✅           | STAFF/ADMIN | Adicionar item a um pedido                     |
-| DELETE | /order/remove    | ✅           | STAFF/ADMIN | Remover item de um pedido                      |
+| Método | Rota              | Autenticação | Permissão   | Descrição                                   |
+| ------ | ----------------- | ------------ | ----------- | ------------------------------------------- |
+| POST   | /users            | ❌           | Pública     | Criar novo usuário                          |
+| POST   | /session          | ❌           | Pública     | Autenticar usuário (login)                  |
+| GET    | /me               | ✅           | STAFF/ADMIN | Obter dados do usuário logado               |
+| POST   | /category         | ✅           | ADMIN       | Criar nova categoria                        |
+| GET    | /category         | ✅           | STAFF/ADMIN | Listar todas as categorias                  |
+| GET    | /category/product | ✅           | STAFF/ADMIN | Listar produtos de uma categoria específica |
+| POST   | /product          | ✅           | ADMIN       | Criar novo produto (com imagem)             |
+| GET    | /products         | ✅           | STAFF/ADMIN | Listar produtos (filtro por disabled)       |
+| POST   | /order            | ✅           | STAFF/ADMIN | Criar novo pedido                           |
+| GET    | /orders           | ✅           | STAFF/ADMIN | Listar todos os pedidos                     |
+| GET    | /order/detail     | ✅           | STAFF/ADMIN | Obter detalhes de um pedido específico      |
+| POST   | /order/add        | ✅           | STAFF/ADMIN | Adicionar item a um pedido                  |
+| DELETE | /order/remove     | ✅           | STAFF/ADMIN | Remover item de um pedido                   |
 
 ---
 
