@@ -25,7 +25,6 @@ class AuthUserService {
       throw new Error('E-mail/senha é obrigatório.');
     }
 
-    // Gerar o TOKEN JWT
     const token = sign(
       {
         name: user.name,
