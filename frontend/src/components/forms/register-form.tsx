@@ -1,9 +1,15 @@
+'use client';
+import { useActionState } from 'react';
+import Link from 'next/link';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { registerAction } from '@/actions/auth';
 
 export function RegisterForm() {
+  const [state, formAction, isPending] = useActionState(registerAction, null);
+
   return (
     <Card className='bg-app-card border border-app-border w-full max-w-md mx-auto'>
       <CardHeader>
@@ -12,7 +18,7 @@ export function RegisterForm() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form className='space-y-4'>
+        <form className='space-y-4' action={formAction}>
           <div className='space-y-2'>
             <Label htmlFor='name' className='text-white'>
               Nome
@@ -20,6 +26,7 @@ export function RegisterForm() {
             <Input
               type='text'
               id='name'
+              name='name'
               placeholder='Digite o seu nome'
               required
               className='text-white bg-app-card border border-app-border'
@@ -32,6 +39,7 @@ export function RegisterForm() {
             <Input
               type='email'
               id='email'
+              name='email'
               placeholder='Digite o seu e-mail'
               required
               minLength={3}
@@ -45,6 +53,7 @@ export function RegisterForm() {
             <Input
               type='password'
               id='password'
+              name='password'
               placeholder='Digite a sua senha'
               required
               minLength={3}
@@ -56,8 +65,15 @@ export function RegisterForm() {
             type='submit'
             className='w-full bg-red-700 text-white hover:bg-red-700'
           >
-            Cadastrar
+            {isPending ? 'Criando conta...' : 'Criar conta'}
           </Button>
+
+          <p className='text-center text-sm text-gray-100'>
+            Já tem uma conta?{' '}
+            <Link href='/login' className='text-red-600'>
+              Faça o login
+            </Link>
+          </p>
         </form>
       </CardContent>
     </Card>
