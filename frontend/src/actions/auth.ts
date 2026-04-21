@@ -1,16 +1,44 @@
 'use server';
 
+import { apiClient } from '@/lib/api';
+import { redirect } from 'next/navigation';
+
 export async function registerAction(
-  prevState: { success: boolean; error: string } | null,
+  prevState: { success: boolean; error: string; redirectTo?: string } | null,
   formData: FormData,
 ) {
-  console.log('Você clicou!');
-  const email = formData.get('email') as string;
-  const name = formData.get('name') as string;
-  const password = formData.get('password') as string;
-  console.log(email);
-  console.log(name);
-  console.log(password);
+  try {
+    const email = formData.get('email') as string;
+    const name = formData.get('name') as string;
+    const password = formData.get('password') as string;
 
-  return { success: true, error: '' };
+    const data = {
+      name: name,
+      email: email,
+      password: password,
+    };
+
+    await apiClient('/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+
+    return {
+      success: true,
+      error: '',
+      redirectTo: '/login',
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: 'Erro ao criar conta.',
+    };
+  }
 }
