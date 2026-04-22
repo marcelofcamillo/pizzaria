@@ -1,3 +1,4 @@
+import { Sidebar } from '@/components/dashboard/sidebar';
 import { requiredAdmin } from '@/lib/auth';
 
 export default async function DashboardLayout({
@@ -8,5 +9,11 @@ export default async function DashboardLayout({
   const user = await requiredAdmin();
   console.log(user);
 
-  return <div>{children}</div>;
+  return (
+    <div className='flex h-screen overflow-hidden '>
+      {/* Sidebar Desktop */}
+      <Sidebar userName={user.name} />
+      {children}
+    </div>
+  );
 }
