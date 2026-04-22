@@ -1,0 +1,7 @@
+export default function AccessDenied() {
+  return (
+    <div>
+      <h1>Você não tem permissão para acessar esta página.</h1>
+    </div>
+  );
+}
