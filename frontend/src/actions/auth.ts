@@ -1,7 +1,7 @@
 'use server';
 
 import { apiClient } from '@/lib/api';
-import { redirect } from 'next/navigation';
+import { AuthResponse, User } from '@/lib/types';
 
 export async function registerAction(
   prevState: { success: boolean; error: string; redirectTo?: string } | null,
@@ -18,7 +18,7 @@ export async function registerAction(
       password: password,
     };
 
-    await apiClient('/users', {
+    await apiClient<User>('/users', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -41,4 +41,30 @@ export async function registerAction(
       error: 'Erro ao criar conta.',
     };
   }
+}
+
+export async function loginAction(
+  prevState: { success: boolean; error: string; redirectTo?: string } | null,
+  formData: FormData,
+) {
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+
+  const data = {
+    email: email,
+    password: password,
+  };
+
+  const response = await apiClient<AuthResponse>('/session', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+  console.log(response);
+
+  return {
+    success: true,
+    error: '',
+    redirectTo: '/dashboard',
+  };
 }
