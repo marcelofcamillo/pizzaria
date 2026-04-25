@@ -50,7 +50,7 @@ export function Sidebar({ userName }: SidebarProps) {
               href={menu.href}
               key={menu.title}
               className={cn(
-                'flex items-center gap-3 px-3 py-2 text-sm rounded-md text-white font-medium',
+                'flex items-center gap-3 px-3 py-2 text-sm rounded-md text-white font-medium transition-colors duration-300',
                 isActive ? 'bg-red-700 text-white' : 'hover:bg-gray-700',
               )}
             >
