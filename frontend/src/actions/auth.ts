@@ -1,8 +1,9 @@
 'use server';
 
 import { apiClient } from '@/lib/api';
-import { setToken } from '@/lib/auth';
+import { removeToken, setToken } from '@/lib/auth';
 import { AuthResponse, User } from '@/lib/types';
+import { redirect } from 'next/navigation';
 
 export async function registerAction(
   prevState: { success: boolean; error: string; redirectTo?: string } | null,
@@ -84,4 +85,9 @@ export async function loginAction(
       error: 'Erro ao fazer o login.',
     };
   }
+}
+
+export async function logoutAction() {
+  await removeToken();
+  redirect('/login');
 }
