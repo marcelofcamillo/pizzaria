@@ -1,19 +1,21 @@
 'use client';
+
 import { cn } from '@/lib/utils';
-import { LogOut, Menu, Package, ShoppingCart, Tags } from 'lucide-react';
+import { ShoppingCart, Package, Tags, LogOut, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from '../ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { logoutAction } from '@/actions/auth';
 import {
   Sheet,
   SheetClose,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '../ui/sheet';
+} from '@/components/ui/sheet';
 import { useState } from 'react';
 
 const menuItems = [
@@ -35,19 +37,25 @@ const menuItems = [
 ];
 
 export function MobileSidebar() {
-  const pathName = usePathname();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   return (
     <div className='lg:hidden'>
       <header className='sticky top-0 z-50 border-b border-app-border bg-app-card'>
-        <div className='flex h-16 items-center justify-between px-4 text-white'>
+        <div className='flex h-16 items-center justify-between px-4'>
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger>
-              <Button variant='ghost' size={'icon'}>
-                <Menu className='h-6 w-6' />
-              </Button>
+            <SheetTrigger
+              className={cn(
+                buttonVariants({
+                  variant: 'ghost',
+                  size: 'icon',
+                }),
+              )}
+            >
+              <Menu className='h-6 w-6' />
             </SheetTrigger>
+
             <SheetContent
               side='left'
               className='w-72 p-0 bg-app-sidebar border-app-border'
@@ -58,20 +66,21 @@ export function MobileSidebar() {
                 </SheetTitle>
               </SheetHeader>
 
+              {/* MENU */}
               <nav className='flex flex-col p-4 space-y-4'>
                 {menuItems.map((menu) => {
                   const Icon = menu.icon;
-                  const isActive = pathName === menu.href;
+                  const isActive = pathname === menu.href;
 
                   return (
                     <Link
                       href={menu.href}
                       key={menu.title}
                       className={cn(
-                        'flex items-center gap-3 px-3 py-2 text-sm rounded-md font-medium transition-colors duration-300 text-white',
+                        'flex items-center gap-3  px-3 py-2 text-sm rounded-md font-medium transition-colors duration-300 text-white',
                         isActive
-                          ? 'bg-red-700 text-white'
-                          : 'hover:bg-gray-700',
+                          ? 'bg-brand-primary text-white'
+                          : 'hover:bg-gray-600',
                       )}
                     >
                       <Icon className='w-5 h-5' />
@@ -80,6 +89,7 @@ export function MobileSidebar() {
                   );
                 })}
               </nav>
+
               <div className='absolute bottom-0 border-t w-full border-app-border p-4'>
                 <form action={logoutAction}>
                   <Button
@@ -94,8 +104,9 @@ export function MobileSidebar() {
               </div>
             </SheetContent>
           </Sheet>
-          <h1 className='text-lg font-bold'>
-            Sujeito<span className='text-red-700'>Pizza</span>
+
+          <h1 className='text-lg font-bold text-white'>
+            Sujeito<span className='text-brand-primary'>Pizza</span>
           </h1>
           <div className='w-10'></div>
         </div>
