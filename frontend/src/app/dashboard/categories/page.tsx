@@ -1,3 +1,4 @@
+import { CategoryForm } from '@/components/dashboard/category-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiClient } from '@/lib/api';
 import { getToken } from '@/lib/auth';
@@ -22,7 +23,7 @@ export default async function Categories() {
           <p className='text-sm sm:text-base mt-1'>Organize suas categorias</p>
         </div>
 
-        <button>Teste</button>
+        <CategoryForm />
       </div>
       {categories.length !== 0 && (
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
