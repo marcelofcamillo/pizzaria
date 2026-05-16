@@ -17,9 +17,27 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { createCategoryAction } from '@/actions/categories';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export function CategoryForm() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  async function handleCreateCategory(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const result = await createCategoryAction(formData);
+
+    if (result.success) {
+      setOpen(false);
+      router.refresh();
+
+      return;
+    } else {
+      console.log(result.error);
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -39,7 +57,7 @@ export function CategoryForm() {
           <DialogDescription>Criando nova categoria</DialogDescription>
         </DialogHeader>
 
-        <form className='space-y-4' action={createCategoryAction}>
+        <form className='space-y-4' onSubmit={handleCreateCategory}>
           <div>
             <Label htmlFor='category' className='mb-2'>
               Nome da categoria
